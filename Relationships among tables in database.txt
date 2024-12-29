@@ -1,0 +1,5 @@
+Customer to Contact_Mech        one to many
+Customer to Order_Header        one to many
+Contact_Mech to Order_Header    one to many
+Order_Header to Order_Item      one to many
+Product to Order_Item           one to many
