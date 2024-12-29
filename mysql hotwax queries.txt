@@ -1,0 +1,141 @@
+mysql> create database hotwax;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use hotwax;
+Database changed
+mysql> CREATE TABLE Customer (
+    ->     customer_id SERIAL PRIMARY KEY,
+    ->     first_name VARCHAR(50) NOT NULL,
+    ->     last_name VARCHAR(50) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> create table Product (product_id serial primary key,product_name varchar(100) not null,color varchar(30),size varchar(10));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> create table Contact_Mech (contact_mech_id serial primary key,customer_id bigint unsigned not null,street_address varchar(100) not null,city varchar(50) not null,state varchar(50) not null,postal_code varchar(20) not null,phone_number varchar(20),email varchar(100),foreign key (customer_id) references Customer(customer_id));
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> desc Contact_Mech;
++-----------------+-----------------+------+-----+---------+----------------+
+| Field           | Type            | Null | Key | Default | Extra          |
++-----------------+-----------------+------+-----+---------+----------------+
+| contact_mech_id | bigint unsigned | NO   | PRI | NULL    | auto_increment |
+| customer_id     | bigint unsigned | NO   | MUL | NULL    |                |
+| street_address  | varchar(100)    | NO   |     | NULL    |                |
+| city            | varchar(50)     | NO   |     | NULL    |                |
+| state           | varchar(50)     | NO   |     | NULL    |                |
+| postal_code     | varchar(20)     | NO   |     | NULL    |                |
+| phone_number    | varchar(20)     | YES  |     | NULL    |                |
+| email           | varchar(100)    | YES  |     | NULL    |                |
++-----------------+-----------------+------+-----+---------+----------------+
+8 rows in set (0.00 sec)
+
+mysql> insert into Contact_Mech(customer_id, street_address, city, state, postal_code, phone_number, email) values ('1','1600 Amphitheatre Parkway', 'Mountain View', 'CA', '94043', '(650) 253-0000', 'john.doe@example.com');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into Contact_Mech(customer_id, street_address, city, state, postal_code, phone_number, email)
+    -> values ('1', '1 Infinite Loop', 'Cupertino', 'CA', '95014', '(408) 996-1010', 'john.doe@work.com');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into Contact_Mech
+    -> (customer_id, street_address, city, state, postal_code, phone_number, email)
+    -> values ('2', '350 Fifth Avenue', 'New York', 'NY', '10118', '(212) 736-33100', 'jane.smith@example.com');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> create table Order_Header (
+    -> order_id serial primary key,
+    -> order_date Date not null,
+    -> customer_id bigint unsigned not null,
+    -> shipping_contact_mech_id bigint unsigned not null,
+    -> billing_contact_mech_id bigint unsigned not null,
+    -> foreign key (customer_id) references Customer(customer_id),
+    -> foreign key (shipping_contact_mech_id) references Contact_Mech(contact_mech_id),
+    -> foreign key (billing_contact_mech_id) references Contact_Mech(contact_mech_id)
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> create table Order_Item (
+    -> order_item_seq_id serial,
+    -> order_id bigint unsigned,
+    -> product_id bigint unsigned not null,
+    -> quantity int not null,
+    -> status varchar(20) not null,
+    -> primary key (order_item_seq_id, order_id),
+    -> foreign key (order_id) references Order_Header(order_id),
+    -> foreign key (product_id) references Product(product_id)
+    -> );
+Query OK, 0 rows affected (0.07 sec)
+
+insert into Customer(first_name, last_name) values('John', 'Doe');
+
+insert into Customer(first_name, last_name)values('Jane', 'Smith');
+
+insert into Contact_Mech(customer_id, street_address, city, state, postal_code, phone_number, email) values ('1','1600 Amphitheatre Parkway', 'Mountain View', 'CA', '94043', '(650) 253-0000', 'john.doe@example.com');
+
+insert into Contact_Mech(customer_id, street_address, city, state, postal_code, phone_number, email)
+values ('1', '1 Infinite Loop', 'Cupertino', 'CA', '95014', '(408) 996-1010', 'john.doe@work.com');
+
+insert into Contact_Mech(customer_id, street_address, city, state, postal_code, phone_number, email)
+values ('2', '350 Fifth Avenue', 'New York', 'NY', '10118', '(212) 736-33100', 'jane.smith@example.com');
+
+
+insert into Product (product_name, color, size)values ('T-Shirt', 'Red', 'M');
+
+insert into Product (product_name, color, size)values ('Jeans', 'Blue', '32');
+
+insert into Product (product_name, color, size)values ('Sneakers', 'White', '9');
+
+insert into Product (product_name, color, size)values ('Jacket', 'Black', 'L');
+
+insert into Product (product_name, color, size)values ('Hat', 'Green', 'One Size');
+
+mysql> desc Contact_Mech;
++-----------------+-----------------+------+-----+---------+----------------+
+| Field           | Type            | Null | Key | Default | Extra          |
++-----------------+-----------------+------+-----+---------+----------------+
+| contact_mech_id | bigint unsigned | NO   | PRI | NULL    | auto_increment |
+| customer_id     | bigint unsigned | NO   | MUL | NULL    |                |
+| street_address  | varchar(100)    | NO   |     | NULL    |                |
+| city            | varchar(50)     | NO   |     | NULL    |                |
+| state           | varchar(50)     | NO   |     | NULL    |                |
+| postal_code     | varchar(20)     | NO   |     | NULL    |                |
+| phone_number    | varchar(20)     | YES  |     | NULL    |                |
+| email           | varchar(100)    | YES  |     | NULL    |                |
++-----------------+-----------------+------+-----+---------+----------------+
+8 rows in set (0.00 sec)
+
+mysql> desc Order_Header;
++--------------------------+-----------------+------+-----+---------+----------------+
+| Field                    | Type            | Null | Key | Default | Extra          |
++--------------------------+-----------------+------+-----+---------+----------------+
+| order_id                 | bigint unsigned | NO   | PRI | NULL    | auto_increment |
+| order_date               | date            | NO   |     | NULL    |                |
+| customer_id              | bigint unsigned | NO   | MUL | NULL    |                |
+| shipping_contact_mech_id | bigint unsigned | NO   | MUL | NULL    |                |
+| billing_contact_mech_id  | bigint unsigned | NO   | MUL | NULL    |                |
++--------------------------+-----------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> desc Order_Item;
++-------------------+-----------------+------+-----+---------+----------------+
+| Field             | Type            | Null | Key | Default | Extra          |
++-------------------+-----------------+------+-----+---------+----------------+
+| order_item_seq_id | bigint unsigned | NO   | PRI | NULL    | auto_increment |
+| order_id          | bigint unsigned | NO   | PRI | NULL    |                |
+| product_id        | bigint unsigned | NO   | MUL | NULL    |                |
+| quantity          | int             | NO   |     | NULL    |                |
+| status            | varchar(20)     | NO   |     | NULL    |                |
++-------------------+-----------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> desc product;
++--------------+-----------------+------+-----+---------+----------------+
+| Field        | Type            | Null | Key | Default | Extra          |
++--------------+-----------------+------+-----+---------+----------------+
+| product_id   | bigint unsigned | NO   | PRI | NULL    | auto_increment |
+| product_name | varchar(100)    | NO   |     | NULL    |                |
+| color        | varchar(30)     | YES  |     | NULL    |                |
+| size         | varchar(10)     | YES  |     | NULL    |                |
++--------------+-----------------+------+-----+---------+----------------+
+4 rows in set (0.01 sec)
